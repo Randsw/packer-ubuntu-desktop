@@ -1,0 +1,52 @@
+{
+    "builders": [
+    {
+      "boot_command": [
+        "<tab>",
+        "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/pressed.cfg ",
+        "auto=true ",
+        "net.ifnames=0 ",
+        "hostname=localhost ",
+        "<enter>"
+      ],
+      "boot_wait": "10s",
+      "guest_os_type": "Ubuntu_64",
+      "guest_additions_mode": "disable",
+      "http_directory": "http",
+      "vm_name": "packer-ubuntu-20.04-amd64",
+      "iso_url": "mini.iso",
+      "iso_checksum": "sha256:402167d5079405e1ff0204002ba90baacfa3a27ee47c8c1d7db628de4c9c77dd",
+      "output_directory": "output-ubuntu-20.04-amd64-{{build_type}}",
+      "hard_drive_interface": "sata",
+      "shutdown_command": "echo 'qwerty1234' | sudo -S shutdown -P now",
+      "ssh_password": "qwerty1234",
+      "ssh_username": "lantern",
+      "ssh_wait_timeout": "10000s",
+      "headless": "false",
+      "disk_size": "20000",
+      "type": "virtualbox-iso",
+      "cpus": "2",
+      "memory": "4096"
+    }
+  ],
+  "provisioners": [ 
+    {
+        "type": "shell",
+        "inline": [ "mkdir /home/lantern/lantern-rand" ] 
+    },
+    {  
+        "type": "file",  
+        "source": "/home/cluster01/Downloads/lantern-rand/", 
+        "destination": "/home/lantern/lantern-rand"
+    },
+    {   
+        "type": "shell",
+        "execute_command": "echo 'qwerty1234' | sudo -S -E bash '{{.Path}}'",
+        "inline": [
+          "echo Packer!!!!",  
+          "/home/lantern/lantern-rand/dpdk-lantern/dpdk_tlp_install.sh"
+        ]
+    }
+  ]
+
+}
